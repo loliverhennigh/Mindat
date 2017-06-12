@@ -13,7 +13,7 @@ import loss as ls
 import inception_model
 
 FLAGS = tf.app.flags.FLAGS
-tf.app.flags.DEFINE_float('learning_rate', 0.0001,
+tf.app.flags.DEFINE_float('learning_rate', 0.01,
                             """ learning rate """)
 tf.app.flags.DEFINE_integer('max_steps',  300000,
                             """ max number of steps to train """)
@@ -33,9 +33,9 @@ def inference(image, keep_prob=1.0, is_training=True):
   return label
 
 def loss(label, logits):
-  loss, reshaped_label = ls.cross_entropy_binary(label, logits)
+  loss = ls.cross_entropy_binary(label, logits)
   tf.summary.scalar('loss', loss)
-  return loss, reshaped_label
+  return loss
 
 def train(total_loss, lr, global_step):
    train_op = tf.train.AdamOptimizer(lr).minimize(total_loss, global_step)

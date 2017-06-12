@@ -25,7 +25,7 @@ def train():
     #logit_test  = model.inference(image_test,  keep_prob=1.0, is_training=False)
 
     # calc error mineral
-    loss_train, aaa = model.loss(label_train, logit_train)
+    loss_train = model.loss(label_train, logit_train)
     #loss_test  = model.loss_mineral(label_test,  logits_test,  train=False)
 
     # train hopefuly 
@@ -82,10 +82,6 @@ def train():
       assert not np.isnan(l_train), 'Model diverged with loss = NaN'
 
       if current_step % 101 == 1:
-        print(sess.run(aaa))
-        print(sess.run(aaa).shape)
-        print(sess.run(label_train))
-        print(sess.run(logit_train))
         print("loss value at " + str(l_train))
         print("time per batch is " + str(elapsed))
 
