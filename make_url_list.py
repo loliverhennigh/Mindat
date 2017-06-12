@@ -72,10 +72,9 @@ for i in xrange(100):
   t.start()
 
 # get all 900,000 urls
-for i in tqdm(xrange(900)):
-  for j in tqdm(xrange(1000)):
-    url_queue.put(base_path + 'photo-' + str(j + 1000*i) + '.html')
-    print(base_path + 'photo-' + str(j + 1000*i) + '.html')
+for i in tqdm(xrange(90)):
+  for j in tqdm(xrange(10000)):
+    url_queue.put(base_path + 'photo-' + str(j + 10000*i) + '.html')
   url_queue.join()
   # save all data every 10000 urls
   img_url_file = open("img_url_list.csv", "w")
