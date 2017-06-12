@@ -11,46 +11,37 @@ def _convert_string_to_mineral_list(string):
   start = -1 
   end = -1 
   if 'var' in string:
-    print(string)
     for i in xrange(len(string)):
       if string[i] == '(':
         start = i
     string = string[:start]
-    print(string)
-
   return string 
 
 with open('img_url_list.csv', 'r') as f:
   lines = f.readlines()
 
+with open('all_minerals.csv', 'r') as f:
+  all_minerals = f.readlines()[0].replace(' ','').split(',')
+
 # split url out
-all_minerals = []
-all_minerals_count = dict()
 for i in xrange(len(lines)):
   new_line = lines[i].split(',')
-  for j in xrange(len(new_line)-1):
-    new_line[j+1] = _convert_string_to_mineral_list(new_line[j+1])
+  replace_line = []
+  replace_line.append(new_line[0])
   for j in xrange(len(new_line)-2):
-    if new_line[j+1] not in all_minerals:
-      all_minerals.append(new_line[j+1])
-      all_minerals_count[new_line[j+1]] = 1
-    else:
-      all_minerals_count[new_line[j+1]] += 1
-  lines[i] = new_line
+    mineral_name = _convert_string_to_mineral_list(new_line[j+1])
+    if mineral_name in all_minerals:
+      replace_line.append(mineral_name)
+  lines[i] = replace_line 
 
-for i in xrange(1000):
-  print(lines[i])
-all_minerals.sort()
-print(all_minerals)
-print(all_minerals_count)
-print(len(all_minerals))
-total_count = 0
-for m in all_minerals:
-  if all_minerals_count[m] > 200:
-    print(m)
-    print(all_minerals_count[m])
-    total_count += 1
-    #total_count += all_minerals_count[m]
-print(total_count)
-    
+img_url_list_converted_file = open("img_url_list_converted.csv", "w")
+for l in lines:
+  if len(l) == 1:
+    continue
+  for v in l:
+    if v != ' ':
+      img_url_list_converted_file.write(v + ', ')
+  img_url_list_converted_file.write('\n')
+  
+
 
