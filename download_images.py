@@ -28,7 +28,6 @@ def worker():
       with open(name, 'wb') as handler:
         handler.write(img_data)
     else:
-      print("no need to download")
     url_queue.task_done()
    
 for i in xrange(20):
