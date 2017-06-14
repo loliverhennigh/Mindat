@@ -45,13 +45,15 @@ def inputs_mineral(batch_size, train=True):
 
   # data augmentation
   image = tf.image.random_flip_left_right(image)
-  image = tf.image.random_brightness(image, max_delta=25)
-  image = tf.image.random_contrast(image, 0.8, 1.2)
+  #image = tf.image.random_brightness(image, max_delta=25)
+  #image = tf.image.random_contrast(image, 0.8, 1.2)
   image = tf.random_crop(image, [240, 240, 3])
   image = tf.reshape(image, [1, 240, 240, 3])
-  image = tf.image.resize_bicubic(image, [256, 256])
-  image = tf.reshape(image, [256, 256, 3])
-  image = tf.image.per_image_standardization(image)
+  #image = tf.image.resize_bicubic(image, [256, 256])
+  image = tf.image.resize_bicubic(image, [128, 128])
+  #image = tf.reshape(image, [256, 256, 3])
+  image = tf.reshape(image, [128, 128, 3])
+  #image = tf.image.per_image_standardization(image)
     
   # display in tf summary page 
   images, labels  = _generate_image_label_batch_mineral(image, label, batch_size)

@@ -21,7 +21,7 @@ def train():
     #image_test,  label_test  = inputs.inputs_mineral(FLAGS.batch_size, train=False)
 
     # create network train
-    logit_train = model.inference(image_train, keep_prob=0.8)
+    logit_train = model.inference(image_train, keep_prob=1.0)
     #logit_test  = model.inference(image_test,  keep_prob=1.0, is_training=False)
 
     # calc error mineral

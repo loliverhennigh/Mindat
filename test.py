@@ -20,7 +20,7 @@ all_minerals = lines.replace(' ','').split(',')
 def print_top_prediction(label, logit, top_k=5):
   max_prediction = dict()
   true_label = []
-  for i in xrange(len(all_minerals)):
+  for i in xrange(len(all_minerals)-1):
     max_prediction[all_minerals[i]] = logit[i*2]
     if label[i*2] == 1:
       true_label.append(all_minerals[i])
@@ -35,9 +35,11 @@ def train():
   with tf.Graph().as_default():
     # make inputs mineral
     image, label = inputs.inputs_mineral(1, train=False)
+    label = label[:,8:10]
 
     # inference
     logit = model.inference(image) 
+    logit = logit[:,8:10]
     logit_prob = ls.softmax_binary(logit)
 
     # List of all Variables
@@ -76,10 +78,30 @@ def train():
     summary_writer = tf.summary.FileWriter(TRAIN_DIR, graph_def=graph_def)
 
     # calc number of steps left to run
-    correct = []
+    correct = 0.0
     for step in xrange(1000):
+      #img, prob_out, label_out = sess.run([image, logit, label])
+      #img, prob_out, label_out = sess.run([image, logit_prob, label])
       img, prob_out, label_out = sess.run([image, logit_prob, label])
-      print_top_prediction(label_out[0], prob_out[0])
+      print(label_out[0])
+      if label_out[0,0] == 1.0:
+        print("contains albite: YES")
+      else:
+        print("contains albite: NO")
+      print(prob_out[0])
+      if prob_out[0,0] > .5:
+        print("prediction: YES")
+      else:
+        print("prediction: NO")
+      if label_out[0,0] == 1.0 and prob_out[0,0] > .5:
+        correct += 1.0
+      elif label_out[0,0] == 0.0 and prob_out[0,0] < .5:
+        correct += 1.0
+      print("accuracy so far is " + str(correct/(step+1.0)))
+      #if label_out[0,0] == 1.0:
+      #  break
+      #print_top_prediction(label_out[0], prob_out[0])
+      """
       img = img[0]
       img = img - np.min(img)
       img = 255.0*img/np.max(img)
@@ -87,6 +109,7 @@ def train():
       img = cv2.resize(img, (330, 330))
       cv2.imshow("image", img)
       cv2.waitKey(0)
+      """
       
     
 

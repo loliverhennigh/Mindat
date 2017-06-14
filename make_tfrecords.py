@@ -24,18 +24,14 @@ def load_image(image_name, shape = [256,256]):
 
 def mineral_name_vector(minerals, all_minerals):
   mineral_vec = np.zeros(len(all_minerals)*2)
-  print(minerals)
-  print(all_minerals)
   for i in xrange(len(all_minerals)):
     if all_minerals[i] in minerals:
-      print("found")
       mineral_vec[i*2]   = 1.0
       mineral_vec[i*2+1] = 0.0
     else:
       mineral_vec[i*2]   = 0.0
       mineral_vec[i*2+1] = 1.0
   mineral_vec = np.uint8(mineral_vec)
-  print(mineral_vec)
   return mineral_vec
 
 def _bytes_feature(value):
@@ -53,7 +49,8 @@ for l in lines:
 # make list of all mineral
 with open('all_minerals.csv', 'r') as f:
   lines = f.readlines()[0]
-all_minerals = lines.replace(' ','').split(',')
+all_minerals = lines.replace(' ','').split(',')[:-1]
+print(len(all_minerals))
 
 
 base_dir = './tfrecords/'
