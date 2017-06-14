@@ -10,15 +10,17 @@ def int_shape(x):
   return list(map(int, x.get_shape()))
 
 def cross_entropy_binary(label, logit):
+  total_loss = 0.0
   label = label[:,:-2]
   logit = logit[:,:-2]
-  """
-  label = label[:,8:10]
-  logit = logit[:,8:10]
-  loss = tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=logit)
-  ratio = label[:,0]*(1.0/0.01936368421892) + 1.0
-  loss = loss*ratio
-  loss = tf.reduce_mean(loss) 
+  for i in xrange(139):
+    label_i = label[:,2*i:2*(i+1)]
+    logit_i = logit[:,2*i:2*(i+1)]
+    loss_i = tf.nn.softmax_cross_entropy_with_logits(labels=label_i, logits=logit_i)
+    ratio = label_i[:,0]*((1.0/mineral_ratios[i])-1.0) + 1.0
+    loss_i = loss_i*ratio
+    loss_i = tf.reduce_mean(loss_i) 
+    total_loss += loss_i
   """
   logit_orig = logit
   # get shape
@@ -41,12 +43,13 @@ def cross_entropy_binary(label, logit):
   #loss = tf.reduce_sum(loss_norm) 
   loss = tf.reduce_mean(loss_norm) 
   #loss = tf.nn.l2_loss(label-logit)
-  return loss
+  """
+  return total_loss
 
 def softmax_binary(inputs):
-  #inputs_shape = int_shape(inputs)
-  #inputs = tf.reshape(inputs, [inputs_shape[0]*inputs_shape[1]/2, 2])
+  inputs_shape = int_shape(inputs)
+  inputs = tf.reshape(inputs, [inputs_shape[0]*inputs_shape[1]/2, 2])
   inputs = tf.nn.softmax(inputs)
-  #inputs = tf.reshape(inputs, [inputs_shape[0], inputs_shape[1]])
+  inputs = tf.reshape(inputs, [inputs_shape[0], inputs_shape[1]])
   return inputs
 

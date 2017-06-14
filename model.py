@@ -16,7 +16,7 @@ import nn
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_float('learning_rate', 0.0001,
                             """ learning rate """)
-tf.app.flags.DEFINE_integer('max_steps',  300000,
+tf.app.flags.DEFINE_integer('max_steps',  800000,
                             """ max number of steps to train """)
 tf.app.flags.DEFINE_integer('batch_size', 128,
                             """ training batch size """)
