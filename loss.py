@@ -44,9 +44,9 @@ def cross_entropy_binary(label, logit):
   return loss
 
 def softmax_binary(inputs):
-  #inputs_shape = int_shape(inputs)
-  #inputs = tf.reshape(inputs, [inputs_shape[0]*inputs_shape[1]/2, 2])
+  inputs_shape = int_shape(inputs)
+  inputs = tf.reshape(inputs, [inputs_shape[0]*inputs_shape[1]/2, 2])
   inputs = tf.nn.softmax(inputs)
-  #inputs = tf.reshape(inputs, [inputs_shape[0], inputs_shape[1]])
+  inputs = tf.reshape(inputs, [inputs_shape[0], inputs_shape[1]])
   return inputs
 

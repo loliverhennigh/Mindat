@@ -35,11 +35,9 @@ def train():
   with tf.Graph().as_default():
     # make inputs mineral
     image, label = inputs.inputs_mineral(1, train=False)
-    label = label[:,8:10]
 
     # inference
     logit = model.inference(image) 
-    logit = logit[:,8:10]
     logit_prob = ls.softmax_binary(logit)
 
     # List of all Variables
@@ -83,24 +81,7 @@ def train():
       #img, prob_out, label_out = sess.run([image, logit, label])
       #img, prob_out, label_out = sess.run([image, logit_prob, label])
       img, prob_out, label_out = sess.run([image, logit_prob, label])
-      print(label_out[0])
-      if label_out[0,0] == 1.0:
-        print("contains albite: YES")
-      else:
-        print("contains albite: NO")
-      print(prob_out[0])
-      if prob_out[0,0] > .5:
-        print("prediction: YES")
-      else:
-        print("prediction: NO")
-      if label_out[0,0] == 1.0 and prob_out[0,0] > .5:
-        correct += 1.0
-      elif label_out[0,0] == 0.0 and prob_out[0,0] < .5:
-        correct += 1.0
-      print("accuracy so far is " + str(correct/(step+1.0)))
-      #if label_out[0,0] == 1.0:
-      #  break
-      #print_top_prediction(label_out[0], prob_out[0])
+      print_top_prediction(label_out[0], prob_out[0])
       """
       img = img[0]
       img = img - np.min(img)
