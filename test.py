@@ -44,7 +44,6 @@ def train():
 
     # inference
     logit = model.inference(image) 
-    #logit = logit[:,8:10]
     logit_prob = ls.softmax_binary(logit)
 
     # List of all Variables
