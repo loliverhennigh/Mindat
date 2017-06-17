@@ -18,7 +18,7 @@ with open('all_minerals.csv', 'r') as f:
   lines = f.readlines()[0]
 all_minerals = lines.replace(' ','').split(',')
 
-def print_top_prediction(label, logit, top_k=25):
+def print_top_prediction(label, logit, top_k=10):
   max_prediction = dict()
   true_label = []
   for i in xrange(len(all_minerals)-1):
@@ -28,12 +28,15 @@ def print_top_prediction(label, logit, top_k=25):
   max_prediction = sorted(max_prediction.iteritems(), key=lambda (k,v): (-v,k))
   print("True label: " + str(true_label))
   print("Predicted label: " )
+  is_correct = False
   for i in xrange(top_k):
     if max_prediction[i][0] in true_label:
       color = 'green'
+      is_correct = True 
     else:
       color = 'red'
     print(colored(str(max_prediction[i][0]) + ': prob ' + str(max_prediction[i][1]), color))
+  return is_correct
 
 def train():
   """Train ring_net for a number of steps."""
@@ -83,14 +86,16 @@ def train():
 
     # calc number of steps left to run
     true_correct = 0.0
-    false_correct = 0.0
     true_count = 0.0
-    false_count = 0.0
     for step in xrange(1000):
       #img, prob_out, label_out = sess.run([image, logit, label])
       #img, prob_out, label_out = sess.run([image, logit_prob, label])
       img, prob_out, label_out = sess.run([image, logit_prob, label])
-      print_top_prediction(label_out[0], prob_out[0])
+      is_correct = print_top_prediction(label_out[0], prob_out[0])
+      true_count += 1.0
+      if is_correct:
+        true_correct += 1.0
+      print("accuracy is " + str(true_correct/true_count))
       """
       print(label_out[0])
       if label_out[0,0] == 1.0:
@@ -121,7 +126,7 @@ def train():
       img = img - np.min(img)
       img = 255.0*img/np.max(img)
       img = np.uint8(img)
-      img = cv2.resize(img, (330, 330))
+      img = cv2.resize(img, (512, 512))
       cv2.imshow("image", img)
       cv2.waitKey(0)
       

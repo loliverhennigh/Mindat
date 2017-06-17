@@ -17,7 +17,7 @@ def cross_entropy_binary(label, logit):
     label_i = label[:,2*i:2*(i+1)]
     logit_i = logit[:,2*i:2*(i+1)]
     loss_i = tf.nn.softmax_cross_entropy_with_logits(labels=label_i, logits=logit_i)
-    ratio = label_i[:,0]*((1.0/mineral_ratios[i])-1.0) + 1.0
+    ratio = label_i[:,0]*((1.0/(2.0*mineral_ratios[i]))-1.0) + 1.0
     loss_i = loss_i*ratio
     loss_i = tf.reduce_mean(loss_i) 
     total_loss += loss_i

@@ -36,11 +36,15 @@ mineral_types = []
 all_minerals = []
 
 # make worker
-url_queue = Queue(50)
+url_queue = Queue(100)
 def worker():
   while True:
     url = url_queue.get()
-    page = requests.get(url)
+    try:
+      page = requests.get(url, timeout=60)
+    except:
+      print("bad url")
+      url_queue.task_done()
     html = etree.HTML(page.content)
     # find image url, if none break
     img_url = html.xpath('.//img[@id="mainphoto"]')
@@ -72,10 +76,11 @@ for i in xrange(100):
   t.start()
 
 # get all 900,000 urls
-for i in tqdm(xrange(90)):
-  for j in tqdm(xrange(10000)):
-    url_queue.put(base_path + 'photo-' + str(j + 10000*i) + '.html')
+for i in tqdm(xrange(900)):
+  for j in tqdm(xrange(1000)):
+    url_queue.put(base_path + 'photo-' + str(j + 1000*i) + '.html')
   url_queue.join()
+  print("saving URLs")
   # save all data every 10000 urls
   img_url_file = open("img_url_list.csv", "w")
   for i in xrange(len(img_urls)):
