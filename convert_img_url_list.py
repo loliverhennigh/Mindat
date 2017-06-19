@@ -37,6 +37,7 @@ for i in xrange(len(lines)):
 img_url_list_converted_file = open("img_url_list_converted.csv", "w")
 for l in lines:
   if len(l) == 1:
+    print(l)
     continue
   for v in l:
     if v != ' ':

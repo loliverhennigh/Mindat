@@ -5,6 +5,7 @@ import os
 import model
 import inputs 
 import time
+import initializer
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -44,13 +45,14 @@ def train():
     summary_op = tf.summary.merge_all()
  
     # Build an initialization operation to run below.
-    init = tf.global_variables_initializer()
+    #init = tf.global_variables_initializer()
 
     # Start running operations on the Graph.
     sess = tf.Session()
 
     # init if this is the very time training
-    sess.run(init)
+    initializer.initialize_inception_v3(sess, variables)
+    #sess.run(init)
  
     # init from checkpoint
     saver_restore = tf.train.Saver(variables)

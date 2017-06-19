@@ -40,7 +40,7 @@ all_minerals.sort()
 all_minerals_file = open("all_minerals.csv", "w")
 number_of_mins = 0
 for m in all_minerals:
-  if all_minerals_count[m] > 300:
+  if all_minerals_count[m] > 1000:
     if m != '':
       all_minerals_file.write(m + ', ')
       number_of_mins += 1

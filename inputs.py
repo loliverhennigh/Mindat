@@ -17,8 +17,8 @@ def read_data_mineral(filename_queue):
     }) 
   label = tf.decode_raw(features['label'], tf.uint8)
   image = tf.decode_raw(features['image'], tf.uint8)
-  label = tf.reshape(label, [2*140])
-  image = tf.reshape(image, [256, 256, 3])
+  label = tf.reshape(label, [122])
+  image = tf.reshape(image, [299, 299, 3])
   label = tf.to_float(label)
   image = tf.to_float(image)
   return image, label 
@@ -45,14 +45,12 @@ def inputs_mineral(batch_size, train=True):
 
   # data augmentation
   image = tf.image.random_flip_left_right(image)
-  #image = tf.image.random_brightness(image, max_delta=25)
-  #image = tf.image.random_contrast(image, 0.8, 1.2)
-  image = tf.random_crop(image, [240, 240, 3])
-  image = tf.reshape(image, [1, 240, 240, 3])
-  #image = tf.image.resize_bicubic(image, [256, 256])
-  image = tf.image.resize_bicubic(image, [128, 128])
-  #image = tf.reshape(image, [256, 256, 3])
-  image = tf.reshape(image, [128, 128, 3])
+  image = tf.image.random_brightness(image, max_delta=15)
+  image = tf.image.random_contrast(image, 0.9, 1.1)
+  image = tf.random_crop(image, [250, 250, 3])
+  image = tf.reshape(image, [1, 250, 250, 3])
+  image = tf.image.resize_bicubic(image, [299, 299])
+  image = tf.reshape(image, [299, 299, 3])
   #image = tf.image.per_image_standardization(image)
     
   # display in tf summary page 

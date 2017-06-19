@@ -10,15 +10,14 @@ import tensorflow as tf
 import numpy as np
 import inputs
 import loss as ls
-import inception_model
-import nn
+from nets import nets_factory
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_float('learning_rate', 0.0001,
                             """ learning rate """)
 tf.app.flags.DEFINE_integer('max_steps',  800000,
                             """ max number of steps to train """)
-tf.app.flags.DEFINE_integer('batch_size', 128,
+tf.app.flags.DEFINE_integer('batch_size', 8,
                             """ training batch size """)
 
 # cifar data url
@@ -30,6 +29,7 @@ def inputs_mineral(batch_size, train=True):
   return images, labels 
 
 def inference(image, keep_prob=1.0, is_training=True):
+  """
   x_i = image
   x_i = nn.conv_layer(x_i, 5, 1, 32, "conv_1", nonlinearity=tf.nn.relu)
   x_i = nn.conv_layer(x_i, 3, 1, 32, "conv_2", nonlinearity=tf.nn.relu)
@@ -48,11 +48,16 @@ def inference(image, keep_prob=1.0, is_training=True):
   x_i = nn.fc_layer(x_i, 512, "fc_2", nonlinearity=tf.nn.relu) 
   x_i = tf.nn.dropout(x_i, keep_prob)
   label = nn.fc_layer(x_i, 2*140, "fc_classes", nonlinearity=None) 
-  #label = inception_model.inception_v3(image, dropout_keep_prob=keep_prob, num_classes=140*2, is_training=is_training)
+  """
+  network_fd = nets_factory.get_network_fn("inception_v3", 122, is_training=True)
+  #label, _ = network_fd(image, dropout_keep_prob=keep_prob, num_classes=140*2, is_training=is_training)
+  label, _ = network_fd(image)
   return label
 
-def loss(label, logits):
-  loss = ls.cross_entropy_binary(label, logits)
+def loss(label, logit):
+  label = label/tf.expand_dims(tf.reduce_sum(label, axis=1), axis=1)
+  loss = tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=logit)
+  loss = tf.reduce_mean(loss)
   tf.summary.scalar('loss', loss)
   return loss
 

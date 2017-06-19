@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 from tqdm import tqdm
 
-def load_image(image_name, shape = [256,256]):
+def load_image(image_name, shape = [299,299]):
   image = cv2.imread(image_name)
   if image is None:
     return image
@@ -23,14 +23,10 @@ def load_image(image_name, shape = [256,256]):
   return image 
 
 def mineral_name_vector(minerals, all_minerals):
-  mineral_vec = np.zeros(len(all_minerals)*2)
+  mineral_vec = np.zeros(len(all_minerals))
   for i in xrange(len(all_minerals)):
     if all_minerals[i] in minerals:
-      mineral_vec[i*2]   = 1.0
-      mineral_vec[i*2+1] = 0.0
-    else:
-      mineral_vec[i*2]   = 0.0
-      mineral_vec[i*2+1] = 1.0
+      mineral_vec[i] = 1.0
   mineral_vec = np.uint8(mineral_vec)
   return mineral_vec
 
@@ -52,13 +48,14 @@ with open('all_minerals.csv', 'r') as f:
 all_minerals = lines.replace(' ','').split(',')[:-1]
 print(len(all_minerals))
 
-
 base_dir = './tfrecords/'
-train_record_filename = base_dir + 'train.tfrecord'
-train_writer = tf.python_io.TFRecordWriter(train_record_filename)
-
-test_record_filename = base_dir + 'test.tfrecord'
-test_writer = tf.python_io.TFRecordWriter(test_record_filename)
+train_mineral_writers = dict()
+test_mineral_writers = dict()
+for m in all_minerals:
+  train_record_filename = base_dir + m + '_train.tfrecord'
+  train_mineral_writers[m] = tf.python_io.TFRecordWriter(train_record_filename)
+  test_record_filename = base_dir + m + '_test.tfrecord'
+  test_mineral_writers[m] = tf.python_io.TFRecordWriter(test_record_filename)
 
 for i in tqdm(xrange(len(url_list))):
   image_name = '/data/mindat-images/' + '_'.join(url_list[i].split('/')[3:])
@@ -72,9 +69,9 @@ for i in tqdm(xrange(len(url_list))):
     'image': _bytes_feature(image)}))
   split = np.random.rand()
   if split > .8:
-    test_writer.write(example.SerializeToString())
+    test_mineral_writers[minerals_list[i][0]].write(example.SerializeToString())
   else:
-    train_writer.write(example.SerializeToString())
+    train_mineral_writers[minerals_list[i][0]].write(example.SerializeToString())
  
 
 
